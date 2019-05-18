@@ -55,7 +55,23 @@ assign out_v = (round == 64);
 //
 // Your work here
 //
+wire [31:0] sumD;
 
+Chm16 Chm16(Ch, e_q, f_q, g_q);
+S1m16 S1m16(S1, e_q);
+MAm16 Mam16(Maj, a_q, b_q, c_q);
+S0m16 S0m16(S0, a_q);
+
+assign sumD = K + W + h_q + Ch + S1;
+
+assign b_d = a_q;
+assign c_d = b_q;
+assign d_d = c_q;
+assign e_d = d_q + sumD;
+assign f_d = e_q;
+assign g_d = f_q;
+assign h_d = g_q;
+assign a_d = sumD + Maj + S0;
 //
 // Bank of Registers
 //
