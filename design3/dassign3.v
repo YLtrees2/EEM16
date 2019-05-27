@@ -90,6 +90,7 @@ module tictactoe(turnX, turnO, occ_pos, occ_square, occ_player, game_st_ascii, r
   wire [8:0] win_positions;
   wire [8:0] occ_pos_psudo;
   reg [8:0] occ_pos_reg;
+  reg [1:0] nx_half_flash_reg;
 
   `define ASCII_X 8'b01011000
   `define ASCII_O 8'b01001111
@@ -104,9 +105,9 @@ module tictactoe(turnX, turnO, occ_pos, occ_square, occ_player, game_st_ascii, r
     ascii_reg <= nx_ascii;
   end
   
-  always @(posedge flash_clk) begin
-    flash_reg <= flash_reg + 1'b0;
-    half_flash_reg <= half_flash_reg + 1'b0;
+  always @(posedge flash_clk, negedge flash_clk) begin
+    flash_reg <= flash_reg + 1'b1;
+    half_flash_reg <= half_flash_reg + 1'b1;
   end
  
   assign nx_game_state=nx_game_state_reg;
@@ -130,15 +131,15 @@ module tictactoe(turnX, turnO, occ_pos, occ_square, occ_player, game_st_ascii, r
   assign win_positions[1]=(occ_player[7]&occ_player[4]&occ_player[1])|(occ_player[2]&occ_player[1]&occ_player[0])|(occ_O_wire[7]&occ_O_wire[4]&occ_O_wire[1])|(occ_O_wire[2]&occ_O_wire[1]&occ_O_wire[0]);
   assign win_positions[0]=(occ_player[6]&occ_player[3]&occ_player[0])|(occ_player[2]&occ_player[1]&occ_player[0])|(occ_player[8]&occ_player[4]&occ_player[0])|(occ_O_wire[6]&occ_O_wire[3]&occ_O_wire[0])|(occ_O_wire[2]&occ_O_wire[1]&occ_O_wire[0])|(occ_O_wire[8]&occ_O_wire[4]&occ_O_wire[0]);
   
-  assign occ_pos[0]=(~win_positions[0]&occ_square[0]&occ_player[0])|(~win_positions[0]&occ_square[0]&occ_O_wire[0]&half_flash_reg[1])|(win_positions[0]&flash_reg);
-  assign occ_pos[1]=(~win_positions[1]&occ_square[1]&occ_player[1])|(~win_positions[1]&occ_square[1]&occ_O_wire[1]&half_flash_reg[1])|(win_positions[1]&flash_reg);
-  assign occ_pos[2]=(~win_positions[2]&occ_square[2]&occ_player[2])|(~win_positions[2]&occ_square[2]&occ_O_wire[2]&half_flash_reg[1])|(win_positions[2]&flash_reg);
-  assign occ_pos[3]=(~win_positions[3]&occ_square[3]&occ_player[3])|(~win_positions[3]&occ_square[3]&occ_O_wire[3]&half_flash_reg[1])|(win_positions[3]&flash_reg);
-  assign occ_pos[4]=(~win_positions[4]&occ_square[4]&occ_player[4])|(~win_positions[4]&occ_square[4]&occ_O_wire[4]&half_flash_reg[1])|(win_positions[4]&flash_reg);
-  assign occ_pos[5]=(~win_positions[5]&occ_square[5]&occ_player[5])|(~win_positions[5]&occ_square[5]&occ_O_wire[5]&half_flash_reg[1])|(win_positions[5]&flash_reg);
-  assign occ_pos[6]=(~win_positions[6]&occ_square[6]&occ_player[6])|(~win_positions[6]&occ_square[6]&occ_O_wire[6]&half_flash_reg[1])|(win_positions[6]&flash_reg);
-  assign occ_pos[7]=(~win_positions[7]&occ_square[7]&occ_player[7])|(~win_positions[7]&occ_square[7]&occ_O_wire[7]&half_flash_reg[1])|(win_positions[7]&flash_reg);
-  assign occ_pos[8]=(~win_positions[8]&occ_square[8]&occ_player[8])|(~win_positions[8]&occ_square[8]&occ_O_wire[8]&half_flash_reg[1])|(win_positions[8]&flash_reg);
+  assign occ_pos[0]=(~win_positions[0]&occ_square[0]&occ_player[0])|(~win_positions[0]&occ_square[0]&occ_O_wire[0]&half_flash_reg[0])|(win_positions[0]&half_flash_reg[1]);
+  assign occ_pos[1]=(~win_positions[1]&occ_square[1]&occ_player[1])|(~win_positions[1]&occ_square[1]&occ_O_wire[1]&half_flash_reg[0])|(win_positions[1]&half_flash_reg[1]);
+  assign occ_pos[2]=(~win_positions[2]&occ_square[2]&occ_player[2])|(~win_positions[2]&occ_square[2]&occ_O_wire[2]&half_flash_reg[0])|(win_positions[2]&half_flash_reg[1]);
+  assign occ_pos[3]=(~win_positions[3]&occ_square[3]&occ_player[3])|(~win_positions[3]&occ_square[3]&occ_O_wire[3]&half_flash_reg[0])|(win_positions[3]&half_flash_reg[1]);
+  assign occ_pos[4]=(~win_positions[4]&occ_square[4]&occ_player[4])|(~win_positions[4]&occ_square[4]&occ_O_wire[4]&half_flash_reg[0])|(win_positions[4]&half_flash_reg[1]);
+  assign occ_pos[5]=(~win_positions[5]&occ_square[5]&occ_player[5])|(~win_positions[5]&occ_square[5]&occ_O_wire[5]&half_flash_reg[0])|(win_positions[5]&half_flash_reg[1]);
+  assign occ_pos[6]=(~win_positions[6]&occ_square[6]&occ_player[6])|(~win_positions[6]&occ_square[6]&occ_O_wire[6]&half_flash_reg[0])|(win_positions[6]&half_flash_reg[1]);
+  assign occ_pos[7]=(~win_positions[7]&occ_square[7]&occ_player[7])|(~win_positions[7]&occ_square[7]&occ_O_wire[7]&half_flash_reg[0])|(win_positions[7]&half_flash_reg[1]);
+  assign occ_pos[8]=(~win_positions[8]&occ_square[8]&occ_player[8])|(~win_positions[8]&occ_square[8]&occ_O_wire[8]&half_flash_reg[0])|(win_positions[8]&half_flash_reg[1]);
   
   //assign occ_pos = occ_pos_reg;
   
