@@ -85,12 +85,10 @@ module tictactoe(turnX, turnO, occ_pos, occ_square, occ_player, game_st_ascii, r
   wire check_square;
   wire check_player;
   wire check_O;
-  reg flash_reg=1'b0;
   reg [1:0] half_flash_reg=2'b00;
   wire [8:0] win_positions;
   wire [8:0] occ_pos_psudo;
   reg [8:0] occ_pos_reg;
-  reg [1:0] nx_half_flash_reg;
 
   `define ASCII_X 8'b01011000
   `define ASCII_O 8'b01001111
@@ -106,7 +104,6 @@ module tictactoe(turnX, turnO, occ_pos, occ_square, occ_player, game_st_ascii, r
   end
   
   always @(posedge flash_clk, negedge flash_clk) begin
-    flash_reg <= flash_reg + 1'b1;
     half_flash_reg <= half_flash_reg + 1'b1;
   end
  
@@ -118,8 +115,7 @@ module tictactoe(turnX, turnO, occ_pos, occ_square, occ_player, game_st_ascii, r
   
   assign turnX=(~game_state[3]&~game_state[2]&~game_state[1]&game_state[0])|(~game_state[3]&~game_state[2]&game_state[1]&~game_state[0]);
   assign turnO=(~game_state[3]&game_state[2]&game_state[1]);
-  //TODO: output [8:0] occ_pos;
-  //TODO: wire [8:0] occ_pos;
+
   
   assign win_positions[8]=(occ_player[8]&occ_player[5]&occ_player[2])|(occ_player[8]&occ_player[7]&occ_player[6])|(occ_player[8]&occ_player[4]&occ_player[0])|(occ_O_wire[8]&occ_O_wire[5]&occ_O_wire[2])|(occ_O_wire[8]&occ_O_wire[7]&occ_O_wire[6])|(occ_O_wire[8]&occ_O_wire[4]&occ_O_wire[0]);
   assign win_positions[7]=(occ_player[7]&occ_player[4]&occ_player[1])|(occ_player[8]&occ_player[7]&occ_player[6])|(occ_O_wire[7]&occ_O_wire[4]&occ_O_wire[1])|(occ_O_wire[8]&occ_O_wire[7]&occ_O_wire[6]);
@@ -141,7 +137,6 @@ module tictactoe(turnX, turnO, occ_pos, occ_square, occ_player, game_st_ascii, r
   assign occ_pos[7]=(~win_positions[7]&occ_square[7]&occ_player[7])|(~win_positions[7]&occ_square[7]&occ_O_wire[7]&half_flash_reg[0])|(win_positions[7]&half_flash_reg[1]);
   assign occ_pos[8]=(~win_positions[8]&occ_square[8]&occ_player[8])|(~win_positions[8]&occ_square[8]&occ_O_wire[8]&half_flash_reg[0])|(win_positions[8]&half_flash_reg[1]);
   
-  //assign occ_pos = occ_pos_reg;
   
 
   assign valid = ~((sel_pos[0]&occ_square[0])|(sel_pos[1]&occ_square[1])|(sel_pos[2]&occ_square[2])|(sel_pos[3]&occ_square[3])|(sel_pos[4]&occ_square[4])|(sel_pos[5]&occ_square[5])|(sel_pos[6]&occ_square[6])|(sel_pos[7]&occ_square[7])|(sel_pos[8]&occ_square[8]));
@@ -235,7 +230,7 @@ module tictactoe(turnX, turnO, occ_pos, occ_square, occ_player, game_st_ascii, r
         `GAME_ST_WIN_X:begin
             nx_game_state_reg=`GAME_ST_WIN_X;
             nx_ascii=`ASCII_X;
-            //occ_pos_reg=occ_pos_psudo;
+            
         end
         
         `GAME_ST_CATS:begin
@@ -299,7 +294,7 @@ module tictactoe(turnX, turnO, occ_pos, occ_square, occ_player, game_st_ascii, r
         `GAME_ST_WIN_O:begin
             nx_game_state_reg=`GAME_ST_WIN_O;
             nx_ascii=`ASCII_O;
-            //occ_pos_reg=occ_pos_psudo;
+            
         end
         
       endcase
